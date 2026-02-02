@@ -1,0 +1,73 @@
+# Databricks Multi-Agent RAG UI
+
+Multi-agent RAG chat interface deployed as a Databricks App.
+
+## Architecture
+
+```
+Gradio App → Agent Endpoints → Vector Search → Delta Tables ← PDFs (Volumes)
+```
+
+## Quick Start
+
+### 1. Manual Setup (Databricks Workspace)
+
+```sql
+-- Create schema
+CREATE SCHEMA IF NOT EXISTS catalog.rag_agents;
+
+-- Create volumes for PDFs
+CREATE VOLUME catalog.rag_agents.agent_a_pdfs;
+CREATE VOLUME catalog.rag_agents.agent_b_pdfs;
+CREATE VOLUME catalog.rag_agents.agent_c_pdfs;
+```
+
+Upload PDFs to respective volumes.
+
+### 2. Run Data Pipeline
+
+Run notebooks in order:
+1. `data_prep/01_parse_pdfs.ipynb` - Parse PDFs → Delta tables
+2. `data_prep/02_create_indexes.ipynb` - Create Vector Search indexes
+
+### 3. Deploy Agents
+
+Run `agents/deploy_agents.ipynb` to:
+- Register models in Unity Catalog
+- Deploy serving endpoints
+
+### 4. Deploy App
+
+```bash
+# Set variables
+export DATABRICKS_HOST=https://your-workspace.cloud.databricks.com
+
+# Deploy
+databricks bundle deploy -t dev \
+  --var catalog=your_catalog \
+  --var schema=rag_agents \
+  --var warehouse_id=your_warehouse_id
+```
+
+## Configuration
+
+Update these files before deployment:
+- `data_prep/*.ipynb` - Set CATALOG, SCHEMA
+- `agents/config_*.yml` - Vector search index names, LLM endpoint
+- `src/chat_app/app.py` - AGENTS dict (display names → endpoint names)
+
+## Structure
+
+```
+├── databricks.yml           # Asset bundle config
+├── src/chat_app/
+│   ├── app.py               # Gradio UI
+│   └── requirements.txt
+├── agents/
+│   ├── agent.py             # RAG agent logic
+│   ├── config_*.yml         # Per-agent configs
+│   └── deploy_agents.ipynb  # Deployment notebook
+└── data_prep/
+    ├── 01_parse_pdfs.ipynb
+    └── 02_create_indexes.ipynb
+```
