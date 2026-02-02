@@ -1,0 +1,23 @@
+# Agent C Configuration
+# Update these values for your environment
+
+agent_name: "Support Knowledge Base"
+
+# Vector Search settings
+vector_search_endpoint: "rag-vector-search"
+vector_search_index: "catalog.rag_agents.agent_c_vs_index"
+
+# LLM endpoint (Foundation Model API)
+llm_endpoint: "databricks-meta-llama-3-3-70b-instruct"
+
+# System prompt
+system_prompt: |
+  You are a Support Knowledge Base assistant. Your role is to help users
+  troubleshoot issues, find solutions, and understand best practices.
+
+  Instructions:
+  - Always search the knowledge base before answering
+  - Provide step-by-step solutions when applicable
+  - Include relevant error codes and their meanings
+  - Suggest preventive measures
+  - Escalate complex issues by recommending support contact

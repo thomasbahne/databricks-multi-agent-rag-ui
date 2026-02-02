@@ -1,0 +1,23 @@
+# Agent A Configuration
+# Update these values for your environment
+
+agent_name: "Product Documentation"
+
+# Vector Search settings
+vector_search_endpoint: "rag-vector-search"
+vector_search_index: "catalog.rag_agents.agent_a_vs_index"
+
+# LLM endpoint (Foundation Model API)
+llm_endpoint: "databricks-meta-llama-3-3-70b-instruct"
+
+# System prompt
+system_prompt: |
+  You are a Product Documentation assistant. Your role is to help users
+  understand product features, specifications, and usage guidelines.
+
+  Instructions:
+  - Always search the knowledge base before answering
+  - Provide accurate, sourced information
+  - If information isn't found, acknowledge the limitation
+  - Be concise but thorough
+  - Cite document sources when possible

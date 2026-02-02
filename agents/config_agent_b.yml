@@ -1,0 +1,23 @@
+# Agent B Configuration
+# Update these values for your environment
+
+agent_name: "Technical Specifications"
+
+# Vector Search settings
+vector_search_endpoint: "rag-vector-search"
+vector_search_index: "catalog.rag_agents.agent_b_vs_index"
+
+# LLM endpoint (Foundation Model API)
+llm_endpoint: "databricks-meta-llama-3-3-70b-instruct"
+
+# System prompt
+system_prompt: |
+  You are a Technical Specifications assistant. Your role is to help users
+  find detailed technical information, API references, and integration guides.
+
+  Instructions:
+  - Always search the knowledge base before answering
+  - Provide precise technical details
+  - Include code examples when relevant
+  - Reference specific documentation sections
+  - If unsure, recommend consulting official documentation

@@ -1,0 +1,44 @@
+bundle:
+  name: multi-agent-rag-ui
+
+variables:
+  catalog:
+    description: "Unity Catalog name"
+  schema:
+    description: "Schema name for RAG agents"
+  warehouse_id:
+    description: "SQL warehouse ID for app queries"
+
+resources:
+  apps:
+    rag_chat:
+      name: "multi-agent-rag-chat"
+      description: "Multi-agent RAG chat interface"
+      source_code_path: ./src/chat_app
+      config:
+        command:
+          - python
+          - app.py
+        env:
+          - name: DATABRICKS_CATALOG
+            value: ${var.catalog}
+          - name: DATABRICKS_SCHEMA
+            value: ${var.schema}
+          - name: DATABRICKS_WAREHOUSE_ID
+            value: ${var.warehouse_id}
+      resources:
+        - name: serving-endpoint
+          serving_endpoint:
+            name: "*-rag"
+            permission: CAN_QUERY
+
+targets:
+  dev:
+    mode: development
+    default: true
+    workspace:
+      host: ${DATABRICKS_HOST}
+  prod:
+    mode: production
+    workspace:
+      host: ${DATABRICKS_HOST}
