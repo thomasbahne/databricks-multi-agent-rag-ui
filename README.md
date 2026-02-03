@@ -26,17 +26,28 @@ Upload PDFs to respective volumes.
 
 ### 2. Run Data Pipeline
 
-Run notebooks in order:
+**Option A: Via Databricks Job (recommended)**
+
+```bash
+databricks bundle deploy -t dev \
+  --var catalog=your_catalog \
+  --var schema=rag_agents \
+  --var warehouse_id=your_warehouse_id
+
+# Run the job
+databricks bundle run rag_data_pipeline -t dev
+```
+
+The job runs all notebooks in sequence with proper parameterization.
+
+**Option B: Manual notebook execution**
+
+Run notebooks in order, setting `catalog` and `schema` widget values:
 1. `data_prep/01_parse_pdfs.ipynb` - Parse PDFs → Delta tables
 2. `data_prep/02_create_indexes.ipynb` - Create Vector Search indexes
+3. `agents/deploy_agents.ipynb` - Register models and deploy endpoints
 
-### 3. Deploy Agents
-
-Run `agents/deploy_agents.ipynb` to:
-- Register models in Unity Catalog
-- Deploy serving endpoints
-
-### 4. Deploy App
+### 3. Deploy App
 
 ```bash
 # Set variables
@@ -52,9 +63,10 @@ databricks bundle deploy -t dev \
 ## Configuration
 
 Update these files before deployment:
-- `data_prep/*.ipynb` - Set CATALOG, SCHEMA
 - `agents/config_*.yml` - Vector search index names, LLM endpoint
 - `src/chat_app/app.py` - AGENTS dict (display names → endpoint names)
+
+Notebook parameters (`catalog`, `schema`) are passed via job or widget values.
 
 ## Structure
 
