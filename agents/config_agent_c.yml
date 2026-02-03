@@ -1,14 +1,13 @@
 # Agent C Configuration
 # Update these values for your environment
 
-agent_name: "Support Knowledge Base"
+agent_name: "BMW car expert"
 
-# Vector Search settings
-vector_search_endpoint: "rag-vector-search"
+# Vector Search index (catalog.schema substituted at runtime)
 vector_search_index: "catalog.rag_agents.agent_c_vs_index"
 
 # LLM endpoint (Foundation Model API)
-llm_endpoint: "databricks-meta-llama-3-3-70b-instruct"
+llm_endpoint: "databricks-claude-opus-4-5"
 
 # System prompt
 system_prompt: |
