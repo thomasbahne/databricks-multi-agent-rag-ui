@@ -10,6 +10,43 @@ variables:
     description: "SQL warehouse ID for app queries"
 
 resources:
+  jobs:
+    rag_data_pipeline:
+      name: "rag-data-pipeline-${bundle.target}"
+      tasks:
+        - task_key: parse_pdfs
+          notebook_task:
+            notebook_path: ./data_prep/01_parse_pdfs.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          environment_key: default
+
+        - task_key: create_indexes
+          depends_on:
+            - task_key: parse_pdfs
+          notebook_task:
+            notebook_path: ./data_prep/02_create_indexes.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          environment_key: default
+
+        - task_key: deploy_agents
+          depends_on:
+            - task_key: create_indexes
+          notebook_task:
+            notebook_path: ./agents/deploy_agents.ipynb
+            base_parameters:
+              catalog: ${var.catalog}
+              schema: ${var.schema}
+          environment_key: default
+
+      environments:
+        - environment_key: default
+          spec:
+            client: "1"
+
   apps:
     rag_chat:
       name: "multi-agent-rag-chat"
